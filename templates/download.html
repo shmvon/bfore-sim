@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block logo %}{% endblock %}
+{% block content %}
+<h1 class="heading">{{ t('site.title') }}</h1>
+<br>
+<div class="box">{{ t('download.entries', n=nrentries) }}</div>
+{% for message in get_flashed_messages() %}<div class="box" style="color: darkred;">{{ message }}</div>{% endfor %}
+<br>
+{% if not enabled %}<div class="box" style="color: darkred;">{{ t('download.not_configured') }}</div>{% endif %}
+<div class="box">
+  <form action="{{ url_for('website.download') }}" method="POST" style="display: inline-block;">
+    <table>
+      <tr>
+        <td style="vertical-align: top; text-align: right;"><label for="downloadcode">{{ t('download.code') }}</label></td>
+        <td style="vertical-align: top;">
+          <input type="password" id="downloadcode" name="downloadcode" autocomplete="off" required style="width: 120px;">
+        </td>
+      </tr>
+    </table>
+    <br>
+    <button type="submit" class="big">{{ t('download.submit') }}</button>
+  </form>
+</div>
+{% endblock %}

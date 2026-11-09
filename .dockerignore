@@ -1,0 +1,14 @@
+data/
+_junk/
+simenv/
+__pycache__/
+*.pyc
+*.db
+# a downloaded fdb.db placed in seeds/ does go into the image, to seed an empty volume
+!seeds/*.db
+.DS_Store
+.git/
+docs/
+templates/_archief/
+~$*
+.env

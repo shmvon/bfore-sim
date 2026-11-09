@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software or data collected with it, please cite it as below."
+title: "Bargaining Simulation Tool (BFORE)"
+abstract: >-
+  A web-based serious game about collective bargaining and inequality at company
+  level, developed within the EU-funded research project Bargaining For Equality
+  (BFORE) at HIVA – KU Leuven.
+type: software
+authors:
+  - family-names: Vandekerckhove
+    given-names: Sem
+    affiliation: "HIVA – KU Leuven"
+  - family-names: Lenaerts
+    given-names: Karolien
+    affiliation: "HIVA – KU Leuven"
+version: "6.0"
+year: 2026
+license: AGPL-3.0-or-later
+repository-code: "https://github.com/shmvon/bfore-sim"
+url: "https://sim.bfore.be"
+keywords:
+  - collective bargaining
+  - wage inequality
+  - serious game
+  - simulation

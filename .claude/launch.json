@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bfore-sim",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "app.py"
+      ],
+      "port": 8500
+    }
+  ]
+}

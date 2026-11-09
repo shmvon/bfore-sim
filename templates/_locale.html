@@ -1,0 +1,21 @@
+{# Country and language switch, shown at the top of every page.
+   The language menu only appears once a country has been chosen. #}
+<form class="locale-bar" method="post" action="{{ url_for('i18n.set_locale') }}">
+  <input type="hidden" name="next" value="{{ request.path }}">
+  <label for="loc-country">{{ t('locale.country') }}</label>
+  <select id="loc-country" name="country" onchange="this.form.submit()">
+    {% if not current_country() %}<option value="" selected>{{ t('locale.choose_country') }}</option>{% endif %}
+    {% for c in country_list() %}
+    <option value="{{ c.code }}" {% if c.code == current_country() %}selected{% endif %}>{{ c.label }}</option>
+    {% endfor %}
+  </select>
+  {% if current_country() %}
+  <label for="loc-language">{{ t('locale.language') }}</label>
+  <select id="loc-language" name="language" onchange="this.form.submit()">
+    {% for l in language_list() %}
+    <option value="{{ l.code }}" {% if l.code == current_lang() %}selected{% endif %}>{{ l.label }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+  <noscript><button type="submit">{{ t('locale.apply') }}</button></noscript>
+</form>

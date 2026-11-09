@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% macro level(conf) -%}
+<span class="level level-{{ conf }}">{{ t('translations.level_' ~ conf) }}</span>
+{%- endmacro %}
+{% block content %}
+<h1 class="heading">{{ t('translations.title') }}</h1>
+<div class="box">
+  <p>{{ t('translations.intro') }}</p>
+  <p>{{ t('translations.steps', link=Markup('<a href="https://hiva.kuleuven.be/sites/bfore" target="_blank">hiva.kuleuven.be/sites/bfore</a>')) }}</p>
+</div>
+
+<h2 class="heading">{{ t('translations.legend') }}</h2>
+<div class="box">
+  <table class="table legend">
+    {% for conf in ['high', 'medium', 'low', 'reviewed'] %}
+    <tr><td class="table">{{ level(conf) }}</td><td class="table">{{ t('translations.conf_' ~ conf) }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<h2 class="heading">{{ t('translations.files') }}</h2>
+<div class="box">
+  <table class="langtable">
+    <colgroup><col class="lang"><col class="quality"><col class="progress"><col class="countries"><col class="file"></colgroup>
+    <tr>
+      <th>{{ t('translations.col_language') }}</th>
+      <th>{{ t('translations.col_quality') }}</th>
+      <th>{{ t('translations.col_reviewed') }}</th>
+      <th>{{ t('translations.col_countries') }}</th>
+      <th>{{ t('translations.col_file') }}</th>
+    </tr>
+    {% for l in languages %}
+    <tr>
+      <td><b>{{ l.name }}</b> <span class="code">{{ l.code }}</span></td>
+      <td>{{ level(l.confidence) }}</td>
+      <td>
+        {% if l.confidence != 'source' %}
+        {{ l.reviewed }}/{{ l.total }}
+        <progress max="{{ l.total }}" value="{{ l.reviewed }}"></progress>
+        {% else %}–{% endif %}
+      </td>
+      <td>{% if l.code == 'en' %}<i>{{ t('translations.all_countries') }}</i>{% else %}{{ l.countries|join(', ') }}{% endif %}</td>
+      <td><a href="{{ url_for('i18n.translation_file', name=l.code) }}">{{ l.file }}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<h2 class="heading">{{ t('translations.other_files') }}</h2>
+<div class="box">
+  <p><a href="{{ url_for('i18n.translation_file', name='countries') }}">countries.xlsx</a>: {{ t('translations.countries_file') }}</p>
+</div>
+<p></p>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block logo %}
+<div class="box logo"><img src="{{ url_for('static', filename='img/BFORE_CMYK_LOGO.jpg') }}" alt="BFORE" style="width: 300px;"></div>
+
+{% endblock %}
+{% block content %}
+<p></p>
+<div class="box">
+  <p><b>{{ t('thanks.title') }}</b></p>
+  <p>{{ t('thanks.p1') }}</p>
+  <p>{{ t('thanks.p2', link=Markup('<a href="https://hiva.kuleuven.be/sites/bfore">https://hiva.kuleuven.be/sites/bfore</a>')) }}</p>
+</div>
+<div class="partner-logos">
+  <img src="{{ url_for('static', filename='img/EN_FundedbytheEU_RGB_Monochrome.png') }}" alt="{{ t('common.eu_funded') }}">
+  <img src="{{ url_for('static', filename='img/HIVA_report_logo_no_text.png') }}" alt="HIVA – KU Leuven">
+  <img src="{{ url_for('static', filename='img/logo_etui_black.svg') }}" alt="ETUI">
+</div>
+<p style="text-align: center;"><a href="{{ url_for('i18n.translations_page') }}">{{ t('index.translations_link') }}</a></p>
+{% endblock %}

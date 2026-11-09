@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="heading">{{ t('case.heading') }}</h1>
+<div class="box">
+  <p>{{ t('case.p1') }}</p>
+  <p>{{ t('case.p2') }}</p>
+  <p>{{ t('case.p3') }}</p>
+</div>
+
+<div style="text-align: center;">
+  <p><a href="{{ url_for('website.instructions') }}"><button class="big">{{ t('case.next') }}</button></a></p>
+</div>
+{% endblock %}

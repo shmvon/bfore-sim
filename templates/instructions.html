@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block head %}
+{% set info = country_info() %}
+<script>
+  var WAGE_STEP = {{ info.wage_step }};
+  function updateSalaryText(value) {
+    var roundedValue = Math.round(value / WAGE_STEP) * WAGE_STEP;
+    document.getElementById('salary-slider').value = roundedValue;
+    document.getElementById('salary-text').value = roundedValue;
+  }
+  function updateSalarySlider(value) {
+    document.getElementById('salary-slider').value = value;
+  }
+</script>
+{% endblock %}
+{% block content %}
+{% set info = country_info() %}
+{% set cur_before, cur_after = currency_parts() %}
+<h1 class="heading">{{ t('instr.heading') }}</h1>
+<div class="box">
+  <p>{{ t('instr.p1') }}</p>
+  <p>{{ t('instr.p2') }}</p>
+  <p>{{ t('instr.p3') }}</p>
+</div>
+
+<h2 class="heading">{{ t('instr.settings') }}</h2>
+<form method="POST">
+<div class="box">
+  <table class="table">
+    <tr>
+      <td class="table">
+        <label for="roundnumber"><span class="tooltip" tabindex="0">{{ t('instr.rounds.label') }}
+          <span class="tooltiptext">{{ t('instr.rounds.tip') }}</span></span></label>
+      </td>
+      <td class="table" style="text-align: center;">
+        <select id="roundnumber" name="roundnumber">
+          {% for n in range(5, 11) %}<option value="{{ n }}" {% if n == 5 %}selected{% endif %}>{{ n }}</option>{% endfor %}
+          <option value="1">{{ t('instr.rounds.test', n=1) }}</option>
+          <option value="2">{{ t('instr.rounds.test', n=2) }}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top" class="table">
+        <label for="salary-text"><span class="tooltip" tabindex="0">{{ t('instr.wage.label') }}
+          <span class="tooltiptext">{{ t('instr.wage.tip') }}</span></span></label>
+      </td>
+      <td style="vertical-align: top; text-align: center;" class="table">
+        <input type="range" id="salary-slider" name="salary-slider" min="0" max="{{ info.max_wage|int }}" step="{{ info.wage_step|int }}" value="{{ info.default_wage|int }}" oninput="updateSalaryText(this.value)" style="width: 100px;">
+        <br>{{ cur_before }}<input type="number" id="salary-text" name="salary-text" min="0" step="1" value="{{ info.default_wage|int }}" oninput="updateSalarySlider(this.value)" required style="width: 70px;">{{ cur_after }}
+      </td>
+    </tr>
+  </table>
+</div>
+<br>
+<div style="text-align: center;">
+  <button type="submit" class="big">{{ t('instr.submit') }}</button>
+</div>
+</form>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/bst_script.js') }}"></script>{% endblock %}

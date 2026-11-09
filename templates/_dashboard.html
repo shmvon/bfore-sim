@@ -1,0 +1,64 @@
+{# Social dashboard: one table of 3 rows x 6 columns (label | value, three times),
+   so rows and columns always line up. mode = 'round' (arrows) or 'results' (change). #}
+{% macro label(key) -%}
+<span class="tooltip" tabindex="0">{{ t(key ~ '.label') }}<span class="tooltiptext">{{ t(key ~ '.tip') }}</span></span>
+{%- endmacro %}
+{% macro arrow(up, down) -%}
+{% if up %}<span class="up-arrow">&#9650;</span>{% elif down %}<span class="down-arrow">&#9660;</span>{% endif %}
+{%- endmacro %}
+{% macro change(raw, shown) -%}
+<span class="{{ 'up-arrow' if raw >= 0 else 'down-arrow' }}"> {{ shown }}</span>
+{%- endmacro %}
+{% macro gap(key, value, prev) -%}
+<td class="lab">{{ label(key) }}</td>
+{% if mode == 'round' %}
+<td class="val">{{ pct(value) }} {{ arrow(value - prev >= 1, value - prev <= -1) }}</td>
+{% else %}
+<td class="val">{{ pct(value) }}<br>{{ change(value - prev, pct((value - prev)|int, sign=(value - prev >= 0))) }}</td>
+{% endif %}
+{%- endmacro %}
+
+<h2 class="heading">{{ t('dash.heading') }}</h2>
+<div class="box">
+  <table class="dashboard {{ mode }}">
+    <colgroup>
+      <col class="lab"><col class="val"><col class="lab"><col class="val"><col class="lab"><col class="val">
+    </colgroup>
+    <tr>
+      {% if mode == 'round' %}
+      <td class="lab">{{ label('dash.wage') }}</td>
+      <td class="val">{{ money(mean_wage_bonus) }}
+        {{ arrow(mean_wage_bonus / prev_mean_wage_bonus > 1.02, mean_wage_bonus / prev_mean_wage_bonus < 0.98) }}</td>
+      {% else %}
+      <td class="lab">{{ label('dash.nominal_wage') }}</td>
+      <td class="val">{{ money(mean_wage_bonus) }}<br>
+        {{ change(mean_wage_bonus - prev_mean_wage_bonus, money(mean_wage_bonus - prev_mean_wage_bonus, sign=True)) }}</td>
+      {% endif %}
+      {{ gap('dash.gpg', gpg, prev_gpg) }}
+      {{ gap('dash.wnq', wnq, prev_wnq) }}
+    </tr>
+    <tr>
+      <td class="lab">{{ label('dash.real') }}</td>
+      {% if mode == 'round' %}
+      <td class="val">{{ money(real_wage_bonus) }}
+        {{ arrow(real_wage_bonus / prev_real_wage_bonus > 1.02, real_wage_bonus / prev_real_wage_bonus < 0.98) }}</td>
+      {% else %}
+      <td class="val">{{ money(real_wage_bonus) }}<br>
+        {{ change(real_wage_bonus - prev_real_wage_bonus, money(real_wage_bonus - prev_real_wage_bonus, sign=True)) }}</td>
+      {% endif %}
+      {{ gap('dash.apg', apg, prev_apg) }}
+      {{ gap('dash.wd', wd, prev_wd) }}
+    </tr>
+    <tr>
+      <td class="lab">{{ label('dash.emp') }}</td>
+      {% if mode == 'round' %}
+      <td class="val">{% if employment > 0 %}+{% endif %}{{ employment }}
+        {{ arrow(employment - prev_employment >= 1, employment - prev_employment <= -1) }}</td>
+      {% else %}
+      <td class="val">{{ change(employment - prev_employment, ('+' if employment - prev_employment >= 0 else '') ~ ((employment - prev_employment)|int)) }}</td>
+      {% endif %}
+      {{ gap('dash.epg', epg, prev_epg) }}
+      {{ gap('dash.up', up, prev_up) }}
+    </tr>
+  </table>
+</div>

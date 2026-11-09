@@ -1,0 +1,15 @@
+# local environments and caches
+simenv/
+__pycache__/
+*.pyc
+.DS_Store
+# data (lives on the server volume, never in git or the image)
+data/
+_junk/
+*.db
+seeds/*
+!seeds/README.md
+# Excel lock files
+~$*
+# local settings (download code etc.)
+.env

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang() }}">
+<head>
+  <meta charset="utf-8">
+  <title>{{ t('site.title') }}</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% include '_locale.html' %}
+  {% block logo %}
+  <div class="box logo">
+    <img src="{{ url_for('static', filename='img/BFORE_CMYK_LOGO_crop.jpg') }}" alt="BFORE" style="width: 300px;">
+  </div>
+  {% endblock %}
+  {% block content %}{% endblock %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

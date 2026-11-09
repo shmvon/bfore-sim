@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="heading">{{ t('site.title') }}</h1>
+<div class="box">
+  <p>{{ t('index.p1') }}</p>
+  <p>{{ t('index.p2') }}</p>
+  <p>{{ t('index.p3') }}</p>
+  <p>{{ t('index.p4') }}</p>
+  <p>{{ t('index.p5') }}</p>
+  <p>{{ t('index.p6') }}</p>
+</div>
+
+<h2 class="toggleHeader heading closed">{{ t('index.video.heading') }}</h2>
+<div style="display: none;" class="toggleDiv box">
+  <div class="video-wrapper">
+    <p>{{ t('index.video.link', link=Markup('<a href="https://www.youtube.com/watch?v=TTLzAN2R69w" target="_blank">') ~ t('index.video.link_text') ~ Markup('</a>')) }}</p>
+    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/TTLzAN2R69w" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+<h2 class="toggleHeader heading closed">{{ t('index.privacy.heading') }}</h2>
+<div style="display: none;" class="toggleDiv box">
+  <p>{{ t('index.privacy.p1') }}</p>
+  <p>{{ t('index.privacy.p2') }}</p>
+  <p>{{ t('index.privacy.p3') }}</p>
+  <p>{{ t('index.privacy.p4') }}</p>
+  <p>{{ t('index.privacy.p5') }}</p>
+</div>
+
+<div style="text-align: center;">
+  <p><a href="{{ url_for('website.instructions') }}"><button class="big">{{ t('index.start') }}</button></a></p>
+</div>
+
+<div class="box logo">
+  <p><img src="{{ url_for('static', filename='img/EN_FundedbytheEU_RGB_Monochrome.png') }}" alt="{{ t('common.eu_funded') }}" style="width: 200px;"></p>
+  <p>{{ t('index.version', version=bst_version) }}</p>
+  <p><a href="{{ url_for('i18n.translations_page') }}">{{ t('index.translations_link') }}</a></p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll('.toggleHeader').forEach(function(toggleHeader, i) {
+      toggleHeader.addEventListener('click', function() {
+          var toggleDiv = document.querySelectorAll('.toggleDiv')[i];
+          toggleDiv.style.display = (toggleDiv.style.display === 'none') ? 'block' : 'none';
+          toggleHeader.classList.toggle('closed');
+          toggleHeader.classList.toggle('open');
+      });
+  });
+</script>
+{% endblock %}

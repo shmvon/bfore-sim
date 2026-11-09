@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% macro promo(field, key, value) -%}
+<td class="lab"><label for="{{ field }}"><span class="tooltip" tabindex="0">{{ t('round.prom.' ~ key ~ '.label') }}<span class="tooltiptext">{{ t('round.prom.' ~ key ~ '.tip') }}</span></span></label></td>
+<td class="sel">
+  <select id="{{ field }}" name="{{ field }}">
+    <option value="choice1" {% if value == 1 %}selected{% endif %}>{{ t('round.prom.same') }}</option>
+    <option value="choice2" {% if value == 2 %}selected{% endif %}>{{ t('round.prom.' ~ key ~ '.opt2') }}</option>
+    <option value="choice3" {% if value == 3 %}selected{% endif %}>{{ t('round.prom.' ~ key ~ '.opt3') }}</option>
+  </select>
+</td>
+{%- endmacro %}
+{% block content %}
+<h1 class="heading">{{ t('round.heading', round=page) }}</h1>
+
+{% set mode = 'round' %}
+{% include '_dashboard.html' %}
+
+<form method="POST">
+
+    {% if show_claim %}
+    <h2 class="heading">{{ t('round.claim.heading') }}</h2>
+    <div class="box">
+        <p>{{ t('round.claim.context', gains=pct(gains), bcshare=pct(bcshare), wcshare=pct(wcshare), inflation=pct(inflation)) }}</p>
+        <p>
+        <label for="claim"><span class="tooltip" tabindex="0">{{ t('round.claim.label') }}<span class="tooltiptext">{{ t('round.claim.tip') }}</span></span></label>
+        <input type="number" id="claim" name="claim" min="0" max="{{ gains + 5 }}" step="0.1" style="width: 50px;" placeholder="{{ claim }}">%
+        <button type="submit" name="submit_button" value="claim">{{ t('round.claim.submit') }}</button>
+        </p>
+    </div>
+    {% endif %}
+
+    {% if show_method %}
+    <h2 class="heading">{{ t('round.method.heading') }}</h2>
+        <div class="box">
+            {% if page < roundmax %}
+            {{ t('round.method.context', claim=pct(claim), aclaim=money(aclaim), aclaimyear=money(aclaimyear), bonus=money(bonus)) }}
+            {% else %}
+            {# Last round: no bonus, as a bonus would not count in the final results #}
+            {{ t('round.method.context_last', claim=pct(claim), aclaim=money(aclaim), aclaimyear=money(aclaimyear)) }}
+            {% endif %}
+            <p>
+                <label for="mchoice">{{ t('round.method.label') }}</label>
+                <select id="mchoice" name="mchoice">
+                    <option value="select" {% if mchoice == 'select' %}selected{% endif %}>{{ t('common.select') }}</option>
+                    {% if page < roundmax %}
+                    <option value="lump" {% if mchoice == 'lump' %}selected{% endif %}>{{ t('round.method.lump', bonus=money(bonus)) }}</option>
+                    {% endif %}
+                    <option value="percentual" {% if mchoice == 'percentual' %}selected{% endif %}>{{ t('round.method.percentual', claim=pct(claim)) }}</option>
+                    <option value="absolute" {% if mchoice == 'absolute' %}selected{% endif %}>{{ t('round.method.absolute', aclaim=money(aclaim)) }}</option>
+                </select>
+                <button type="submit" name="submit_button" value="method">{{ t('round.method.submit') }}</button>
+                <span id="message" style="color:red;"></span>
+            </p>
+        </div>
+    {% endif %}
+
+    {% if show_promotions %}
+    <h2 class="heading">{{ t('round.prom.heading') }}</h2>
+        <div class="box">
+            {{ t('round.prom.intro') }}
+            <table class="promotions">
+                <colgroup><col class="lab"><col class="sel"><col class="lab"><col class="sel"></colgroup>
+                <tr>{{ promo('pgender', 'gender', pgender) }}{{ promo('ppay', 'pay', ppay) }}</tr>
+                <tr>{{ promo('pagg', 'age', pagg) }}{{ promo('pjobcat', 'jobcat', pjobcat) }}</tr>
+                <tr>{{ promo('porigin', 'origin', porigin) }}{{ promo('punion', 'union', punion) }}</tr>
+            </table>
+            <p><button type="submit" name="submit_button" value="promotions">{{ t('round.prom.submit') }}</button></p>
+        </div>
+        {% endif %}
+</form>
+
+<br>
+<div style="text-align: center">
+    {{ page }}/{{ roundmax }}
+
+    <br> <progress id="progress" max="{{ roundmax }}" value="{{ page }}"></progress>
+
+    {% if show_next %}
+        {% if results_next %}
+        <p><a href="{{ url_for('website.bround', page=page+1) }}"><button class="big">{{ t('round.results_button') }}</button></a></p>
+        {% else %}
+        <p><a href="{{ url_for('website.bround', page=page+1) }}"><button class="big">{{ t('round.next_button') }}</button></a></p>
+        {% endif %}
+    {% else %}
+        <p>{{ t('round.submit_all') }}</p>
+    {% endif %}
+</div>
+<p></p>
+{% endblock %}

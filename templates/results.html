@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% macro target(field, label_key, tip_key) -%}
+<tr>
+  <td class="table"><span class="tooltip" tabindex="0">{{ t(label_key) }} <span class="tooltiptext">{{ t(tip_key) }}</span></span></td>
+  <td class="table checkboxcol23"><input type="checkbox" id="svy_case_{{ field }}" name="svy_case_{{ field }}"></td>
+  <td class="table checkboxcol23"><input type="checkbox" id="svy_real_{{ field }}" name="svy_real_{{ field }}"></td>
+</tr>
+{%- endmacro %}
+{% macro choice(name, options) -%}
+<select id="{{ name }}" name="{{ name }}">
+  <option value="select">{{ t('common.select') }}</option>
+  {% for value, key in options %}<option value="{{ value }}">{{ t(key) }}</option>{% endfor %}
+</select>
+{%- endmacro %}
+{% block content %}
+<h1 class="heading">{{ t('results.heading') }}</h1>
+
+{% set mode = 'results' %}
+{% include '_dashboard.html' %}
+
+<form method="post">
+  <h2 class="heading">{{ t('results.eval.heading') }}</h2>
+  <div class="box">{{ t('results.eval.intro') }}
+    <p></p>
+    <table class="table">
+      <tr>
+        <td class="table">{{ t('results.q.strategy') }}</td>
+        <td class="table" style="text-align:center">
+          <input type="range" id="svy_eval_strategy" name="svy_eval_strategy" min="1" max="5" step="1" value="3" oninput="document.getElementById('svy_eval_strategy_value').innerHTML = this.value;">
+          <span id="svy_eval_strategy_value">3</span>
+        </td>
+        <td class="table"><i>{{ t('results.q.strategy_scale') }}</i></td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.q.results') }}</td>
+        <td class="table" style="text-align:center">
+          <input type="range" id="svy_eval_results" name="svy_eval_results" min="1" max="5" step="1" value="3" oninput="document.getElementById('svy_eval_results_value').innerHTML = this.value;">
+          <span id="svy_eval_results_value">3</span>
+        </td>
+        <td class="table"><i>{{ t('results.q.results_scale') }}</i></td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.q.approach') }}</td>
+        <td class="table">{{ choice('svy_eval_approach', [('realistic', 'results.approach.realistic'), ('tryout', 'results.approach.tryout'), ('training', 'results.approach.training')]) }}</td>
+      </tr>
+    </table>
+    <p></p>
+    <p>{{ t('results.targets.intro') }}</p>
+    <table class="table">
+      <tr>
+        <th></th>
+        <th style="text-align: center; font-weight: bold;" class="table checkboxcol23">{{ t('results.targets.col_sim') }}</th>
+        <th style="text-align: center; font-weight: bold;" class="table checkboxcol23">{{ t('results.targets.col_gen') }}</th>
+      </tr>
+      {{ target('wagelevel', 'results.targets.wagelevel', 'results.targets.wagelevel_tip') }}
+      {{ target('employment', 'results.targets.employment', 'results.targets.employment_tip') }}
+      {{ target('gender_pay_gap', 'dash.gpg.label', 'results.targets.more_equal_tip') }}
+      {{ target('age_pay_gap', 'dash.apg.label', 'results.targets.more_equal_tip') }}
+      {{ target('ethnic_pay_gap', 'dash.epg.label', 'results.targets.more_equal_tip') }}
+      {{ target('wage_inequality', 'dash.wnq.label', 'results.targets.wage_inequality_tip') }}
+      {{ target('pay_differentials', 'dash.wd.label', 'results.targets.pay_differentials_tip') }}
+      {{ target('union_premium', 'dash.up.label', 'results.targets.union_premium_tip') }}
+    </table>
+  </div>
+
+  <h2 class="heading">{{ t('results.about.heading') }}</h2>
+  <div class="box">
+    <table class="table">
+      <tr>
+        <td class="table">{{ t('results.about.gender') }}</td>
+        <td class="table">{{ choice('resp_gender', [('male', 'results.about.gender_male'), ('female', 'results.about.gender_female')]) }}</td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.age') }}</td>
+        <td class="table"><input type="number" id="resp_age" name="resp_age" min="12" max="120"></td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.country') }}</td>
+        <td class="table">
+          <select name="resp_country">
+            <option value="select">{{ t('common.select') }}</option>
+            {% for c in country_list() %}
+            <option value="{{ c.value }}" {% if c.code == current_country() %}selected{% endif %}>{{ c.label }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.origin') }}</td>
+        <td class="table">{{ choice('resp_origin', [('native', 'results.about.origin_native'), ('foreign-born', 'results.about.origin_foreign'), ('parents-foreign-born', 'results.about.origin_parents')]) }}</td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.union') }}</td>
+        <td class="table">{{ choice('resp_union', [('not-unionized', 'results.about.union_no'), ('unionized', 'results.about.union_yes'), ('delegate', 'results.about.union_delegate'), ('employer', 'results.about.union_employer')]) }}</td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.paylevel') }}</td>
+        <td class="table">
+          {% for value, key in [('below-average', 'results.about.pay_below'), ('average', 'results.about.pay_average'), ('above-average', 'results.about.pay_above')] %}
+          <input type="radio" id="resp_paylevel_{{ loop.index }}" name="resp_paylevel" value="{{ value }}">
+          <label for="resp_paylevel_{{ loop.index }}">{{ t(key) }}</label>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td class="table">{{ t('results.about.jobstatus') }}</td>
+        <td class="table">{{ choice('resp_jobstatus', [('blue-collar', 'results.about.job_blue'), ('white-collar', 'results.about.job_white'), ('manager', 'results.about.job_manager'), ('self-employed-without-employees', 'results.about.job_self_alone'), ('self-employed-with-employees', 'results.about.job_self_staff'), ('retired', 'results.about.job_retired'), ('unemployed', 'results.about.job_unemployed'), ('student', 'results.about.job_student')]) }}</td>
+      </tr>
+    </table>
+  </div>
+  <div style="text-align: center"><p><button type="submit" class="big">{{ t('results.submit') }}</button></p></div>
+</form>
+{% endblock %}
